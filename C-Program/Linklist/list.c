@@ -16,6 +16,7 @@ class Node
 
 class Linklist
 {
+	public:
 	Node *head;
 	Node *tail;
 
@@ -202,17 +203,117 @@ class Linklist
 		}
 	}
 
+	void reverseList()
+	{
+		Node *prev,*curr,*next;
+		prev=next=NULL;
+		curr=head;
+		if(head==tail)
+		{
+			return;
+		}
+		tail=curr;
+		while(curr)
+		{
+			next=curr->next;
+			curr->next=prev;
+			prev=curr;
+			curr=next;
+		}
+		head=prev;
+	}
+
+	void splitList(Node *frontNode,Node **lFrontNode, Node **rFrontNode)
+	{
+		Node *slowNode,*fastNode;
+		fastNode=frontNode;
+		while(fastNode)
+		{
+			slowNode=frontNode;
+			fastNode=fastNode->next;
+			if(fastNode)
+			{
+				fastNode=fastNode->next;
+			}
+		}
+		*lFrontNode=frontNode;
+		*rFrontNode=slowNode->next;
+		slowNode->next=NULL;
+	}
+
+	Node* sortMergeList(Node *lFrontNode, Node *rFrontNode)
+	{
+		Node *mergeHead=NULL;
+		if(lFrontNode==NULL)
+		{
+			return rFrontNode;
+		}
+		if(rFrontNode==NULL)
+		{
+			return lFrontNode;
+		}
+		if(lFrontNode->data<=rFrontNode->data)
+		{
+			mergeHead=lFrontNode;
+			mergeHead->next=sortMergeList(lFrontNode->next,rFrontNode);
+		}
+		else
+		{
+			mergeHead=rFrontNode;
+			mergeHead->next=sortMergeList(lFrontNode,rFrontNode->next);
+		}
+		return mergeHead;
+	}
+
+	Node* tailOfList()
+	{
+		Node *trav=head;
+		if(trav==NULL)
+		{
+			return NULL;
+		}
+		while(trav->next!=NULL)
+		{
+			trav=trav->next;
+		}
+		return trav;
+	}		
+
+	void mergeListSort(Node **listHead)
+	{
+		Node *frontNode=*listHead;
+		Node *lFrontNode=NULL,*rFrontNode=NULL;
+		if(frontNode==NULL || frontNode->next==NULL)
+		{
+			return;
+		}
+
+		splitList(frontNode,&lFrontNode,&rFrontNode);
+		mergeListSort(&lFrontNode);
+		mergeListSort(&rFrontNode);
+		*listHead=sortMergeList(lFrontNode,rFrontNode);
+		tail=tailOfList();
+		
+	}
+
+
+
 };	
 int main()
 {
 	Linklist list;
 
-	list.addListBeg(2);
-	list.addListBeg(1);
-	list.addListEnd(3);
-	list.addListPos(5,4);
+	list.addListBeg(92);
+	list.addListBeg(18);
+	list.addListEnd(30);
+	list.addListPos(85,4);
 	list.addListPos(0,6);
 	list.addListPos(4,4);
+	list.print();
+	list.mergeListSort(&list.head);
+	cout<<endl<<"tail:"<<list.tail->data<<endl;
+	list.print();
+	list.reverseList();
 	list.print();
 	list.deleteListBeg();
 	list.deleteListEnd();
