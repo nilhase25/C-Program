@@ -222,7 +222,34 @@ class Linklist
 		}
 		head=prev;
 	}
-
+	
+	void reverseList(int reverseNodeCount)
+	{
+		Node *prev,*curr,*next,*temp;
+		int cnt=0;
+		if(reverseNodeCount>count())
+		{
+			cout<<"reverse node count greater than list node count"<<endl;
+		}
+		prev=next=NULL;
+		curr=temp=head;
+		if(head==tail)
+		{
+			return;
+		}
+		tail=curr;
+		while(curr && cnt<reverseNodeCount)
+		{
+			next=curr->next;
+			curr->next=prev;
+			prev=curr;
+			curr=next;
+			cnt++;
+		}
+		temp->next=next;
+		head=prev;
+	}
+	
 	void splitList(Node *frontNode,Node **lFrontNode, Node **rFrontNode)
 	{
 		Node *slowNode,*fastNode;
@@ -315,6 +342,9 @@ int main()
 	list.print();
 	list.reverseList();
 	list.print();
+	list.reverseList(3);
+	list.print();
+	list.reverseList(7);
 	list.deleteListBeg();
 	list.deleteListEnd();
 	list.deleteListPos(6);
